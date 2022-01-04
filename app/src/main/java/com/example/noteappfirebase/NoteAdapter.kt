@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.noteappfirebase.databinding.RowNoteBinding
 
-class NoteAdapter(private val activity: MainActivity): RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
+class NoteAdapter(private val noteFragment: NoteFragment): RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
     var notes = listOf<Note>()
     class NoteViewHolder(val binding: RowNoteBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -17,8 +17,14 @@ class NoteAdapter(private val activity: MainActivity): RecyclerView.Adapter<Note
         holder.binding.apply {
             tvTitle.text = note.content
 
-            ivUpdate.setOnClickListener { activity.showAlert(note.pk, note.content, "update") }
-            ivDelete.setOnClickListener {  activity.showAlert(note.pk, note.content, "delete")}
+            ivUpdate.setOnClickListener {
+                with(noteFragment.sharedPreferences.edit()){
+                putString("NoteID", note.pk)
+                apply()
+            }
+                noteFragment.goUpdate() }
+
+            ivDelete.setOnClickListener {  noteFragment.showAlert(note.pk)}
         }
     }
 
